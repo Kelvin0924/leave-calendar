@@ -1,0 +1,112 @@
+{
+  "teams": [
+    {
+      "id": "management",
+      "name": "Management",
+      "parentId": null,
+      "canViewAll": true
+    },
+    {
+      "id": "controller",
+      "name": "Controller",
+      "parentId": null,
+      "canViewAll": false
+    },
+    {
+      "id": "accountingWT",
+      "name": "WT Accounting",
+      "parentId": "controller",
+      "canViewAll": false
+    },
+    {
+      "id": "accountingFE",
+      "name": "FE Accounting",
+      "parentId": "controller",
+      "canViewAll": false
+    },
+    {
+      "id": "treasury",
+      "name": "Treasury & Payable",
+      "parentId": "controller",
+      "canViewAll": false
+    },
+    {
+      "id": "fpa",
+      "name": "FP&A",
+      "parentId": null,
+      "canViewAll": false
+    },
+    {
+      "id": "credit",
+      "name": "Credit",
+      "parentId": null,
+      "canViewAll": false
+    }
+  ],
+  "users": [
+    {
+      "id": "u-m1",
+      "name": "Chua Boon Chai",
+      "email": "boonchai.chua@futureelectronics.com",
+      "teamId": "management"
+    },
+    {
+      "id": "u-c1",
+      "name": "Kelvin Pang",
+      "email": "kelvin.pang@wtmec.com",
+      "teamId": "controller"
+    },
+    {
+      "id": "u-awt1",
+      "name": "Brandon Lee",
+      "email": "lee.brandon@wtmec.com",
+      "teamId": "accountingWT"
+    },
+    {
+      "id": "u-awt2",
+      "name": "Crystal Wan",
+      "email": "crystal.wan@wtmec.com",
+      "teamId": "accountingWT"
+    },
+    {
+      "id": "u-awt3",
+      "name": "Yeo Shu Yin",
+      "email": "shuyin.yeo@wtmec.com",
+      "teamId": "accountingWT"
+    },
+    {
+      "id": "u-awt4",
+      "name": "Eileen Lim",
+      "email": "eileen.lim@wtmec.com",
+      "teamId": "accountingWT"
+    },
+    {
+      "id": "u-awt5",
+      "name": "Jessie Neo",
+      "email": "jessie.neo@wtmec.com",
+      "teamId": "accountingWT"
+    },
+    {
+      "id": "u-afe1",
+      "name": "Meng Choo",
+      "email": "meng.choo.peh@futureelectronics.com",
+      "teamId": "accountingFE"
+    },
+    {
+      "id": "u-afe2",
+      "name": "Hayley Tan",
+      "email": "hayley.tan@futureelectronics.com",
+      "teamId": "accountingFE"
+    }
+  ],
+  "leaves": [],
+  "wfh": [
+    {
+      "id": "mob1xbdev6x05",
+      "userId": "u-c1",
+      "date": "2026-04-28",
+      "actorId": "u-c1",
+      "createdAt": "2026-04-23T05:39:08.114Z"
+    }
+  ]
+}
