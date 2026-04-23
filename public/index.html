@@ -97,7 +97,7 @@ input, select, textarea { font-family: inherit; }
 }
 
 /* ── app shell ────────────────────────────────────────── */
-#app { display: none; min-height: 100vh; flex-direction: column; }
+#app { display: none; height: 100vh; flex-direction: column; overflow: hidden; }
 
 /* ── top nav ──────────────────────────────────────────── */
 .top-nav {
@@ -241,6 +241,103 @@ input, select, textarea { font-family: inherit; }
 }
 .team-select-wrap select:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
 .toolbar-spacer { flex: 1; }
+
+/* ── person search ────────────────────────────────────── */
+.person-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.person-search-wrap label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.person-search-inner {
+  position: relative;
+}
+.person-search-inner input {
+  padding: 7px 30px 7px 10px;
+  border: 1px solid #E2E8F0;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1E293B;
+  background: #F8FAFC;
+  outline: none;
+  width: 180px;
+  transition: border-color 0.15s, width 0.2s;
+}
+.person-search-inner input:focus {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  width: 220px;
+  background: white;
+}
+.person-search-inner input.has-value {
+  border-color: #2563EB;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-weight: 600;
+}
+.btn-search-clear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  display: none;
+}
+.btn-search-clear:hover { color: #475569; }
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 200;
+  max-height: 240px;
+  overflow-y: auto;
+  display: none;
+}
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #1E293B;
+  transition: background 0.1s;
+}
+.search-suggestion-item:hover { background: #F0F9FF; }
+.search-suggestion-item .s-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+.search-suggestion-item .s-name { font-weight: 500; }
+.search-suggestion-item .s-team { font-size: 11px; color: #94A3B8; margin-left: auto; }
+.search-no-results { padding: 10px 12px; font-size: 13px; color: #94A3B8; text-align: center; }
 .btn-add-leave {
   background: #2563EB;
   color: white;
@@ -260,15 +357,26 @@ input, select, textarea { font-family: inherit; }
 .calendar-wrapper {
   flex: 1;
   padding: 20px 24px;
-  overflow: auto;
+  min-height: 0;   /* allow flex child to shrink */
+  display: flex;
+  flex-direction: column;
 }
 .calendar-card {
   background: white;
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
-.calendar-scroll { overflow-x: auto; }
+/* Single scroll container — handles BOTH horizontal & vertical.
+   Sticky thead and sticky .member-cell both work within this one context. */
+.calendar-scroll {
+  overflow: auto;
+  flex: 1;
+  border-radius: 12px;
+}
 table.cal-table {
   border-collapse: collapse;
   table-layout: fixed;
@@ -290,7 +398,8 @@ table.cal-table thead tr.date-header-row th {
 table.cal-table thead tr.date-header-row th.corner-cell {
   position: sticky;
   left: 0;
-  z-index: 12;
+  top: 0;         /* stick to top AND left — always visible */
+  z-index: 20;    /* highest — sits above both row headers and date headers */
   background: #1E3A5F;
   color: white;
   font-size: 11px;
@@ -392,18 +501,33 @@ table.cal-table tbody tr.user-row:hover td.member-cell { background: #EFF6FF; }
   user-select: none;
   letter-spacing: 0.2px;
 }
-/* half-day: diagonal split — top half = AM, bottom half = PM */
+/* half-day chips — AM fills top half, PM fills bottom half */
+.half-day-cell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+}
 .leave-chip.half-AM {
-  height: 14px;
-  margin-bottom: 0;
-  border-radius: 5px 5px 0 0;
-  opacity: 0.92;
+  flex: 1;
+  height: auto;
+  border-radius: 4px 4px 1px 1px;
+  font-size: 9px;
+  padding: 1px 2px;
 }
 .leave-chip.half-PM {
-  height: 14px;
-  margin-top: 0;
-  border-radius: 0 0 5px 5px;
-  opacity: 0.75;
+  flex: 1;
+  height: auto;
+  border-radius: 1px 1px 4px 4px;
+  font-size: 9px;
+  padding: 1px 2px;
+  opacity: 0.85;
+}
+/* cell flush for half-day wrapper */
+table.cal-table tbody td.data-cell.half-day-td {
+  padding: 1px 2px;
+  vertical-align: top;
 }
 .leave-chip.AL  { background: #3B82F6; }
 .leave-chip.SL  { background: #F59E0B; }
@@ -413,8 +537,6 @@ table.cal-table tbody tr.user-row:hover td.member-cell { background: #EFF6FF; }
 .leave-chip.PH  { background: #F97316; }
 .leave-chip.WFH { background: #10B981; }
 .leave-chip.OTH { background: #6B7280; }
-/* cell wrapper for stacked half-day chips */
-.half-day-cell { display: flex; flex-direction: column; width: 100%; gap: 1px; }
 
 /* ── legend ───────────────────────────────────────────── */
 .legend-bar {
@@ -693,6 +815,15 @@ table.cal-table tbody tr.user-row:hover td.member-cell { background: #EFF6FF; }
       <label for="team-select">Team</label>
       <select id="team-select"></select>
     </div>
+    <!-- Person search -->
+    <div class="person-search-wrap" id="person-search-wrap" style="display:none;">
+      <label>Person</label>
+      <div class="person-search-inner">
+        <input type="text" id="person-search" placeholder="Search name…" autocomplete="off"/>
+        <button class="btn-search-clear" id="btn-search-clear" title="Clear">✕</button>
+        <div class="search-suggestions" id="search-suggestions"></div>
+      </div>
+    </div>
     <div class="toolbar-spacer"></div>
     <button class="btn-add-leave" id="btn-add-leave-toolbar">
       <span>＋</span> Add Leave / WFH
@@ -765,6 +896,7 @@ let currentParent    = null;
 let allTeams         = [];
 let currentMonth     = toMonthStr(new Date());
 let selectedTeamId   = null;   // null = "all" for management
+let selectedUserId   = null;   // null = show all; set to a userId to filter to one person
 let calData          = null;   // { users, leaves, wfh, teams }
 let editingLeaveId   = null;   // null = adding new
 let modalMode        = null;   // 'leave' | 'wfh'
@@ -930,6 +1062,10 @@ function onLoginSuccess() {
     selectedTeamId = currentUser.teamId;
   }
 
+  // Always show person search
+  document.getElementById('person-search-wrap').style.display = 'flex';
+  selectedUserId = null;
+
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
 
@@ -1033,7 +1169,15 @@ function renderCalendar() {
   });
 
   // Build flat ordered user list & team spans for header
-  const orderedTeamIds = Object.keys(teamGroups);
+  // If a person filter is active, show only that user
+  let orderedTeamIds = Object.keys(teamGroups);
+  if (selectedUserId) {
+    // Filter teamGroups to only include the selected user
+    orderedTeamIds.forEach(tid => {
+      teamGroups[tid] = teamGroups[tid].filter(u => u.id === selectedUserId);
+    });
+    orderedTeamIds = orderedTeamIds.filter(tid => teamGroups[tid].length > 0);
+  }
   const flatUsers = orderedTeamIds.flatMap(tid => teamGroups[tid]);
 
   const days  = daysInMonth(currentMonth);
@@ -1118,16 +1262,21 @@ function renderCalendar() {
           const lt = LEAVE_TYPES.find(x => x.code === lv.type);
           const tipText = `${lt ? lt.label : lv.type}${lv.halfDay ? ' (' + lv.halfDay + ')' : ''}${lv.notes ? ' · ' + lv.notes : ''}`;
           if (lv.halfDay) {
-            // Half-day: render a small chip occupying only top or bottom half
+            // Half-day: AM fills top half, PM fills bottom half
+            td.classList.add('half-day-td');
             const wrapper = document.createElement('div');
             wrapper.className = 'half-day-cell';
             wrapper.title = tipText;
             if (lv.halfDay === 'AM') {
+              // AM chip on top, empty space below
               const c = document.createElement('div');
               c.className = `leave-chip half-AM ${lv.type}`;
               c.textContent = lv.type + ' AM';
               wrapper.appendChild(c);
+              const spacer = document.createElement('div'); spacer.style.flex = '1';
+              wrapper.appendChild(spacer);
             } else {
+              // Empty space on top, PM chip on bottom
               const spacer = document.createElement('div'); spacer.style.flex = '1';
               wrapper.appendChild(spacer);
               const c = document.createElement('div');
@@ -1471,8 +1620,74 @@ document.addEventListener('DOMContentLoaded', () => {
   // Team select
   document.getElementById('team-select').addEventListener('change', e => {
     selectedTeamId = e.target.value === 'all' ? 'all' : e.target.value;
+    // Clear person filter when team changes
+    clearPersonSearch();
     loadCalendar();
   });
+
+  // ── Person search ──────────────────────────────────────
+  const searchInput   = document.getElementById('person-search');
+  const searchSuggest = document.getElementById('search-suggestions');
+  const searchClear   = document.getElementById('btn-search-clear');
+
+  function getSearchableUsers() {
+    if (!calData) return [];
+    return calData.users;
+  }
+
+  function showSuggestions(query) {
+    const q = query.trim().toLowerCase();
+    searchSuggest.innerHTML = '';
+    if (!q) { searchSuggest.style.display = 'none'; return; }
+
+    const matches = getSearchableUsers().filter(u => u.name.toLowerCase().includes(q));
+    if (matches.length === 0) {
+      searchSuggest.innerHTML = '<div class="search-no-results">No match found</div>';
+      searchSuggest.style.display = 'block';
+      return;
+    }
+    matches.forEach(u => {
+      const teamObj = allTeams.find(t => t.id === u.teamId);
+      const item = document.createElement('div');
+      item.className = 'search-suggestion-item';
+      item.innerHTML = `
+        <div class="s-avatar" style="background:${avatarColor(u.id)}">${initials(u.name)}</div>
+        <span class="s-name">${u.name}</span>
+        <span class="s-team">${teamObj ? teamObj.name : ''}</span>`;
+      item.addEventListener('mousedown', e => {
+        e.preventDefault(); // prevent blur before click
+        selectPerson(u);
+      });
+      searchSuggest.appendChild(item);
+    });
+    searchSuggest.style.display = 'block';
+  }
+
+  function selectPerson(u) {
+    selectedUserId = u.id;
+    searchInput.value = u.name;
+    searchInput.classList.add('has-value');
+    searchClear.style.display = 'block';
+    searchSuggest.style.display = 'none';
+    renderCalendar(); // re-render client-side, no API call needed
+  }
+
+  function clearPersonSearch() {
+    selectedUserId = null;
+    searchInput.value = '';
+    searchInput.classList.remove('has-value');
+    searchClear.style.display = 'none';
+    searchSuggest.style.display = 'none';
+  }
+
+  searchInput.addEventListener('input', e => showSuggestions(e.target.value));
+  searchInput.addEventListener('focus', e => { if (e.target.value) showSuggestions(e.target.value); });
+  searchInput.addEventListener('blur',  () => setTimeout(() => { searchSuggest.style.display = 'none'; }, 150));
+  searchInput.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { clearPersonSearch(); renderCalendar(); }
+  });
+
+  searchClear.addEventListener('click', () => { clearPersonSearch(); renderCalendar(); });
 
   // Toolbar add leave
   document.getElementById('btn-add-leave-toolbar').addEventListener('click', openAddLeaveToolbar);

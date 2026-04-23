@@ -140,7 +140,7 @@ app.get('/api/calendar', (req, res) => {
 // ─── leave CRUD ──────────────────────────────────────────────────────────────
 
 app.post('/api/leave', (req, res) => {
-  const { userId, type, startDate, endDate, notes, actorId } = req.body || {};
+  const { userId, type, startDate, endDate, notes, halfDay, actorId } = req.body || {};
   if (!userId || !type || !startDate || !endDate || !actorId)
     return res.status(400).json({ error: 'Missing required fields.' });
 
@@ -156,14 +156,14 @@ app.post('/api/leave', (req, res) => {
   if (startDate > endDate)
     return res.status(400).json({ error: 'Start date must be on or before end date.' });
 
-  const leave = { id: genId(), userId, type, startDate, endDate, notes: notes || '', actorId, createdAt: new Date().toISOString() };
+  const leave = { id: genId(), userId, type, startDate, endDate, notes: notes || '', halfDay: halfDay || null, actorId, createdAt: new Date().toISOString() };
   data.leaves.push(leave);
   writeData(data);
   res.json(leave);
 });
 
 app.put('/api/leave/:id', (req, res) => {
-  const { type, startDate, endDate, notes, actorId } = req.body || {};
+  const { type, startDate, endDate, notes, halfDay, actorId } = req.body || {};
   const data   = readData();
   const idx    = data.leaves.findIndex(l => l.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Leave record not found.' });
@@ -180,7 +180,7 @@ app.put('/api/leave/:id', (req, res) => {
   if (startDate > endDate)
     return res.status(400).json({ error: 'Start date must be on or before end date.' });
 
-  data.leaves[idx] = { ...leave, type, startDate, endDate, notes: notes || '', updatedAt: new Date().toISOString() };
+  data.leaves[idx] = { ...leave, type, startDate, endDate, notes: notes || '', halfDay: halfDay || null, updatedAt: new Date().toISOString() };
   writeData(data);
   res.json(data.leaves[idx]);
 });
