@@ -774,7 +774,11 @@ let ctxPendingDate   = null;
 // ═══════════════════════════════════════════════════
 //  UTILS
 // ═══════════════════════════════════════════════════
-function toMonthStr(d) { return d.toISOString().substring(0,7); }
+function toMonthStr(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
 
 function fmtMonth(m) {
   const [y, mo] = m.split('-').map(Number);
@@ -805,7 +809,13 @@ function isWeekend(dateStr) {
   return dw === 0 || dw === 6;
 }
 
-function todayStr() { return new Date().toISOString().substring(0,10); }
+function todayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 
 function initials(name) {
   return name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0,2);
@@ -902,10 +912,11 @@ function onLoginSuccess() {
     : '—';
   document.getElementById('nav-user-team').textContent = teamLabel;
 
-  // Setup team selector (only for users who can view all / management)
-  const canViewAll = currentTeamObj && currentTeamObj.canViewAll;
+  // Setup team selector — show for management AND for parent-level teams (e.g. Controller)
+  const canViewAll   = currentTeamObj && currentTeamObj.canViewAll;
+  const hasChildren  = allTeams.some(t => t.parentId === currentUser.teamId);
   const wrap = document.getElementById('team-select-wrap');
-  if (canViewAll) {
+  if (canViewAll || hasChildren) {
     wrap.style.display = 'flex';
     buildTeamSelect();
     selectedTeamId = 'all';
@@ -1287,7 +1298,17 @@ function openLeaveModal(user, defaultDate, existing) {
   wfhNote.textContent = '🏠 WFH is single-day only and limited to 2 days per calendar month.';
   body.appendChild(wfhNote);
 
-  // Toggle End Date visibility when WFH is selected
+  // Half-day option — must be in DOM BEFORE onTypeChange is called
+  const halfGrp = document.createElement('div'); halfGrp.className = 'form-group'; halfGrp.id = 'half-day-group';
+  halfGrp.innerHTML = `<label>Duration</label>
+    <select id="f-halfday">
+      <option value="">Full Day</option>
+      <option value="AM"${existing && existing.halfDay === 'AM' ? ' selected' : ''}>Half Day — AM only</option>
+      <option value="PM"${existing && existing.halfDay === 'PM' ? ' selected' : ''}>Half Day — PM only</option>
+    </select>`;
+  body.appendChild(halfGrp);
+
+  // Toggle End Date / WFH note / Half-day visibility
   function onTypeChange() {
     const isWfh = typeSel.value === 'WFH';
     document.getElementById('end-date-group').style.display  = isWfh ? 'none' : '';
@@ -1299,18 +1320,8 @@ function openLeaveModal(user, defaultDate, existing) {
   document.getElementById('f-start').addEventListener('change', () => {
     if (typeSel.value === 'WFH') document.getElementById('f-end').value = document.getElementById('f-start').value;
   });
-  // Set initial state in case WFH is pre-selected
+  // Set initial state
   onTypeChange();
-
-  // Half-day option (hidden for WFH)
-  const halfGrp = document.createElement('div'); halfGrp.className = 'form-group'; halfGrp.id = 'half-day-group';
-  halfGrp.innerHTML = `<label>Duration</label>
-    <select id="f-halfday">
-      <option value="">Full Day</option>
-      <option value="AM"${existing && existing.halfDay === 'AM' ? ' selected' : ''}>Half Day — AM only</option>
-      <option value="PM"${existing && existing.halfDay === 'PM' ? ' selected' : ''}>Half Day — PM only</option>
-    </select>`;
-  body.appendChild(halfGrp);
 
   // Notes
   const notesGrp = document.createElement('div'); notesGrp.className = 'form-group';
