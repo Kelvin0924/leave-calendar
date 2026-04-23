@@ -1,112 +1,72 @@
 {
   "teams": [
-    {
-      "id": "management",
-      "name": "Management",
-      "parentId": null,
-      "canViewAll": true
-    },
-    {
-      "id": "controller",
-      "name": "Controller",
-      "parentId": null,
-      "canViewAll": false
-    },
-    {
-      "id": "accountingWT",
-      "name": "WT Accounting",
-      "parentId": "controller",
-      "canViewAll": false
-    },
-    {
-      "id": "accountingFE",
-      "name": "FE Accounting",
-      "parentId": "controller",
-      "canViewAll": false
-    },
-    {
-      "id": "treasury",
-      "name": "Treasury & Payable",
-      "parentId": "controller",
-      "canViewAll": false
-    },
-    {
-      "id": "fpa",
-      "name": "FP&A",
-      "parentId": null,
-      "canViewAll": false
-    },
-    {
-      "id": "credit",
-      "name": "Credit",
-      "parentId": null,
-      "canViewAll": false
-    }
+    { "id": "management",   "name": "Management",      "parentId": null,         "canViewAll": true  },
+    { "id": "controller",   "name": "Controller",       "parentId": null,         "canViewAll": true  },
+    { "id": "accountingSG", "name": "SG Accounting",    "parentId": "controller", "canViewAll": false },
+    { "id": "accountingROA","name": "ROA Accounting",   "parentId": "controller", "canViewAll": false },
+    { "id": "accountingVN", "name": "VN Accounting",    "parentId": "controller", "canViewAll": false },
+    { "id": "accountingIN", "name": "IN Accounting",    "parentId": "controller", "canViewAll": false },
+    { "id": "treasury",     "name": "Treasury",         "parentId": "controller", "canViewAll": false },
+    { "id": "ap",           "name": "AP",               "parentId": "treasury",   "canViewAll": false },
+    { "id": "op",           "name": "Non-trade",        "parentId": "treasury",   "canViewAll": false },
+    { "id": "fpa",          "name": "FP&A",             "parentId": null,         "canViewAll": false },
+    { "id": "tax",          "name": "Tax",              "parentId": null,         "canViewAll": false },
+    { "id": "credit",       "name": "Credit",           "parentId": null,         "canViewAll": false }
   ],
   "users": [
-    {
-      "id": "u-m1",
-      "name": "Chua Boon Chai",
-      "email": "boonchai.chua@futureelectronics.com",
-      "teamId": "management"
-    },
-    {
-      "id": "u-c1",
-      "name": "Kelvin Pang",
-      "email": "kelvin.pang@wtmec.com",
-      "teamId": "controller"
-    },
-    {
-      "id": "u-awt1",
-      "name": "Brandon Lee",
-      "email": "lee.brandon@wtmec.com",
-      "teamId": "accountingWT"
-    },
-    {
-      "id": "u-awt2",
-      "name": "Crystal Wan",
-      "email": "crystal.wan@wtmec.com",
-      "teamId": "accountingWT"
-    },
-    {
-      "id": "u-awt3",
-      "name": "Yeo Shu Yin",
-      "email": "shuyin.yeo@wtmec.com",
-      "teamId": "accountingWT"
-    },
-    {
-      "id": "u-awt4",
-      "name": "Eileen Lim",
-      "email": "eileen.lim@wtmec.com",
-      "teamId": "accountingWT"
-    },
-    {
-      "id": "u-awt5",
-      "name": "Jessie Neo",
-      "email": "jessie.neo@wtmec.com",
-      "teamId": "accountingWT"
-    },
-    {
-      "id": "u-afe1",
-      "name": "Meng Choo",
-      "email": "meng.choo.peh@futureelectronics.com",
-      "teamId": "accountingFE"
-    },
-    {
-      "id": "u-afe2",
-      "name": "Hayley Tan",
-      "email": "hayley.tan@futureelectronics.com",
-      "teamId": "accountingFE"
-    }
+    { "id": "u-m1",  "name": "Chua Boon Chai",   "email": "boonchai.chua@futureelectronics.com",   "teamId": "management"    },
+    { "id": "u-c1",  "name": "Kelvin Pang",       "email": "kelvin.pang@wtmec.com",                 "teamId": "controller"    },
+    { "id": "u-sg1", "name": "Brandon Lee",       "email": "lee.brandon@wtmec.com",                 "teamId": "accountingSG"  },
+    { "id": "u-sg2", "name": "Crystal Wan",       "email": "crystal.wan@wtmec.com",                 "teamId": "accountingSG"  },
+    { "id": "u-sg3", "name": "Yeo Shu Yin",       "email": "shuyin.yeo@wtmec.com",                  "teamId": "accountingSG"  },
+    { "id": "u-sg4", "name": "Eileen Lim",        "email": "eileen.lim@wtmec.com",                  "teamId": "accountingSG"  },
+    { "id": "u-sg5", "name": "Jessie Neo",        "email": "jessie.neo@wtmec.com",                  "teamId": "accountingSG"  },
+    { "id": "u-sg6", "name": "Meng Choo",         "email": "meng.choo.peh@futureelectronics.com",   "teamId": "accountingSG"  },
+    { "id": "u-sg7", "name": "Hayley Tan",        "email": "hayley.tan@futureelectronics.com",       "teamId": "accountingSG"  },
+    { "id": "u-sg8", "name": "Alicia Chua",       "email": "alicia.chua@futureelectronics.com",      "teamId": "accountingSG"  },
+    { "id": "u-sg9", "name": "Chloe Tan",         "email": "chloe.tansy@futureelectronics.com",      "teamId": "accountingSG"  },
+    { "id": "u-ra1", "name": "Gek Ching",         "email": "gekching.lee@futureelectronics.com",     "teamId": "accountingROA" },
+    { "id": "u-ra2", "name": "Scarlett Ang",      "email": "scarlett.ang@futureelectronics.com",     "teamId": "accountingROA" },
+    { "id": "u-ra3", "name": "Febrianti Ong",     "email": "febrianti.ong@futureelectronics.com",    "teamId": "accountingROA" },
+    { "id": "u-ra4", "name": "Dewi Huang",        "email": "dewi.huang@futureelectronics.com",       "teamId": "accountingROA" },
+    { "id": "u-ra5", "name": "Sooi Kee",          "email": "sooikee.c@wtmec.com",                    "teamId": "accountingROA" },
+    { "id": "u-ra6", "name": "Jessy Beh",         "email": "jessy.beh@wtmec.com",                    "teamId": "accountingROA" },
+    { "id": "u-ra7", "name": "SuFern Lee",        "email": "sufern.lee@wtmec.com",                   "teamId": "accountingROA" },
+    { "id": "u-vn1", "name": "Joan",              "email": "duong.duong@wtmec.com",                  "teamId": "accountingVN"  },
+    { "id": "u-vn2", "name": "Julie",             "email": "julie.tran@wtmec.com",                   "teamId": "accountingVN"  },
+    { "id": "u-in1", "name": "Nithiyan G",        "email": "nithyanandan@wtmec.com",                 "teamId": "accountingIN"  },
+    { "id": "u-tr1", "name": "Kay Leong",         "email": "kay.leong@wtmec.com",                    "teamId": "treasury"      },
+    { "id": "u-tr2", "name": "Agnes Chew",        "email": "agnes.chew@futureelectronics.com",       "teamId": "treasury"      },
+    { "id": "u-tr3", "name": "Cheryl Neo",        "email": "cheryl.neo@wtmec.com",                   "teamId": "treasury"      },
+    { "id": "u-ap1", "name": "Chaniel Gan",       "email": "chaniel.gan@wtmec.com",                  "teamId": "ap"            },
+    { "id": "u-ap2", "name": "Ivy Lim",           "email": "ivy.lim@futureelectronics.com",          "teamId": "ap"            },
+    { "id": "u-ap3", "name": "Rachel Ang",        "email": "rachel.ang@futureelectronics.com",       "teamId": "ap"            },
+    { "id": "u-ap4", "name": "Princess Sinlao",   "email": "princess.sinlao@futureelectronics.com",  "teamId": "ap"            },
+    { "id": "u-ap5", "name": "Crislyn Mae",       "email": "crislyn.aninipok@futureelectronics.com", "teamId": "ap"            },
+    { "id": "u-ap6", "name": "Lance Chen",        "email": "lance.chen@futureelectronics.com",       "teamId": "ap"            },
+    { "id": "u-op1", "name": "Shew Yong",         "email": "shewyong.liew@futureelectronics.com",    "teamId": "op"            },
+    { "id": "u-op2", "name": "Jennifer Chong",    "email": "jennifer.chong@futureelectronics.com",   "teamId": "op"            },
+    { "id": "u-op3", "name": "Syariah Goh",       "email": "syairah.goh@futureelectronics.com",      "teamId": "op"            },
+    { "id": "u-op4", "name": "Xue Er",            "email": "xueer.too@futureelectronics.com",        "teamId": "op"            },
+    { "id": "u-op5", "name": "Bee Ling",          "email": "bl.lim@wtmec.com",                       "teamId": "op"            },
+    { "id": "u-op6", "name": "Valerie Teo",       "email": "valerie.teo@wtmec.com",                  "teamId": "op"            },
+    { "id": "u-op7", "name": "Selena Chew",       "email": "selena.chew@wtmec.com",                  "teamId": "op"            },
+    { "id": "u-fp1", "name": "Yen Yen",           "email": "yenyen.tan@futureelectronics.com",       "teamId": "fpa"           },
+    { "id": "u-fp2", "name": "Erica Lee",         "email": "erika.lee@futureelectronics.com",        "teamId": "fpa"           },
+    { "id": "u-tx1", "name": "Ke Yu",             "email": "keyu.tan@wtmec.com",                     "teamId": "tax"           },
+    { "id": "u-cr1", "name": "Weng Cong",         "email": "wengcong.chee@futureelectronics.com",    "teamId": "credit"        },
+    { "id": "u-cr2", "name": "Jassy Lim",         "email": "jassy.lim@futureelectronics.com",        "teamId": "credit"        },
+    { "id": "u-cr3", "name": "Hwee Keng",         "email": "hwee-keng.lim@futureelectronics.com",    "teamId": "credit"        },
+    { "id": "u-cr4", "name": "Andy Yoo",          "email": "andy.yoo@futureelectronics.com",         "teamId": "credit"        },
+    { "id": "u-cr5", "name": "Yeng Ling",         "email": "yenlingchong@wtmec.com",                 "teamId": "credit"        },
+    { "id": "u-cr6", "name": "Shermaine Han",     "email": "shermainehan@wtmec.com",                 "teamId": "credit"        },
+    { "id": "u-cr7", "name": "Jia Chian",         "email": "jiachian.goh@wtmec.com",                 "teamId": "credit"        },
+    { "id": "u-cr8", "name": "Elaine Au",         "email": "elaine.au@futureelectronics.com",        "teamId": "credit"        },
+    { "id": "u-cr9", "name": "Joann Foo",         "email": "joann.foo@futureelectronics.com",        "teamId": "credit"        },
+    { "id": "u-cr10","name": "WaiWaiOo Yin",      "email": "waiwaioo.yin@futureelectronics.com",     "teamId": "credit"        },
+    { "id": "u-cr11","name": "SangHee Jeon",      "email": "sanghee.jeon@futureelectronics.com",     "teamId": "credit"        },
+    { "id": "u-cr12","name": "Teja HR",           "email": "teja.hr@futureelectronics.com",          "teamId": "credit"        }
   ],
   "leaves": [],
-  "wfh": [
-    {
-      "id": "mob1xbdev6x05",
-      "userId": "u-c1",
-      "date": "2026-04-28",
-      "actorId": "u-c1",
-      "createdAt": "2026-04-23T05:39:08.114Z"
-    }
-  ]
+  "wfh": []
 }

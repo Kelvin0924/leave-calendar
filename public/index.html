@@ -842,13 +842,18 @@ const LEAVE_TYPES = [
 
 // Team colours for header bands
 const TEAM_COLORS = {
-  management:   '#1E3A5F',
-  controller:   '#6D28D9',
-  accountingWT: '#7C3AED',
-  accountingFE: '#9333EA',
-  treasury:     '#0EA5E9',
-  fpa:          '#0F766E',
-  credit:       '#B45309',
+  management:    '#1E3A5F',
+  controller:    '#6D28D9',
+  accountingSG:  '#7C3AED',
+  accountingROA: '#9333EA',
+  accountingVN:  '#A855F7',
+  accountingIN:  '#C084FC',
+  treasury:      '#0EA5E9',
+  ap:            '#0284C7',
+  op:            '#0369A1',
+  fpa:           '#0F766E',
+  tax:           '#B45309',
+  credit:        '#DC2626',
 };
 function teamColor(id) { return TEAM_COLORS[id] || '#475569'; }
 
@@ -1012,7 +1017,7 @@ function renderCalendar() {
   });
 
   // ── Determine team grouping ────────────────────
-  const teamOrder  = ['management','controller','accountingWT','accountingFE','treasury','fpa','credit'];
+  const teamOrder  = ['management','controller','accountingSG','accountingROA','accountingVN','accountingIN','treasury','ap','op','fpa','tax','credit'];
   // group users by team, in desired order
   const groupedUsers = [];
   const seenTeams = [];
