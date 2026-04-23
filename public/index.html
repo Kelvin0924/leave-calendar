@@ -1044,9 +1044,11 @@ function onLoginSuccess() {
   av.textContent = initials(currentUser.name);
   av.style.background = avatarColor(currentUser.id);
   document.getElementById('nav-user-name').textContent = currentUser.name;
-  const teamLabel = currentTeamObj
+  const roleLabel = currentTeamObj && currentTeamObj.canViewAll ? '' :
+                    currentUser.role === 'leader' ? ' · Team Leader' : '';
+  const teamLabel = (currentTeamObj
     ? (currentParent ? `${currentParent.name} › ${currentTeamObj.name}` : currentTeamObj.name)
-    : '—';
+    : '—') + roleLabel;
   document.getElementById('nav-user-team').textContent = teamLabel;
 
   // Setup team selector — show for management AND for parent-level teams (e.g. Controller)
@@ -1316,16 +1318,21 @@ function renderCalendar() {
 // ═══════════════════════════════════════════════════
 function canEdit(targetUser) {
   if (!currentUser || !currentTeamObj) return false;
+
+  // canViewAll teams (management, controller) can edit anyone
   if (currentTeamObj.canViewAll) return true;
 
-  // Collect allowed teams for current user
-  function getAllowed(teamId) {
-    const me = allTeams.find(t => t.id === teamId);
-    if (!me) return [teamId];
-    const children = allTeams.filter(t => t.parentId === teamId).map(t => t.id);
-    return [teamId, ...children];
+  // Always allow editing own records
+  if (currentUser.id === targetUser.id) return true;
+
+  // Leaders can edit their team (and sub-teams)
+  if (currentUser.role === 'leader') {
+    const teamScope = [currentUser.teamId, ...allTeams.filter(t => t.parentId === currentUser.teamId).map(t => t.id)];
+    return teamScope.includes(targetUser.teamId);
   }
-  return getAllowed(currentUser.teamId).includes(targetUser.teamId);
+
+  // Regular members: can only edit themselves
+  return false;
 }
 
 function onCellClick(e, user, dateStr, leaveRec, wfhRec) {

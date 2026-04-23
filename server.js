@@ -24,27 +24,47 @@ function genId() {
 }
 
 /**
- * Return all team IDs that `actorTeamId` is allowed to manage.
- * Rules:
- *   - Management (canViewAll) → every team
- *   - Parent team (e.g. "controller") → itself + all children
- *   - Leaf team → only itself
+ * Return all team IDs a user may VIEW (calendar visibility).
+ * - canViewAll team → all teams
+ * - Parent team    → itself + all children (recursive)
+ * - Leaf team      → only itself
  */
-function allowedTeams(actorTeamId, teams) {
+function viewableTeams(actorTeamId, teams) {
   const actorTeam = teams.find(t => t.id === actorTeamId);
   if (!actorTeam) return [];
   if (actorTeam.canViewAll) return teams.map(t => t.id);
-
   const children = teams.filter(t => t.parentId === actorTeamId).map(t => t.id);
   return [actorTeamId, ...children];
 }
 
 /**
- * Return all team IDs a user may VIEW (same as manage + parent chain for
- * management-style overview).  For simplicity, view === manage here.
+ * Check whether `actor` may add/edit/delete leave for `targetUserId`.
+ * Security rules:
+ *   1. canViewAll team (management, controller) → can manage anyone
+ *   2. role === "leader"                        → can manage own team members
+ *   3. role === "member"                        → can only manage themselves
  */
-function viewableTeams(actorTeamId, teams) {
-  return allowedTeams(actorTeamId, teams);
+function canEditForUser(actor, targetUserId, users, teams) {
+  if (!actor) return false;
+
+  // Always allow editing own records
+  if (actor.id === targetUserId) return true;
+
+  const actorTeam = teams.find(t => t.id === actor.teamId);
+
+  // canViewAll (management / controller) can manage everyone
+  if (actorTeam && actorTeam.canViewAll) return true;
+
+  // Leaders can manage their own team (and sub-teams)
+  if (actor.role === 'leader') {
+    const target = users.find(u => u.id === targetUserId);
+    if (!target) return false;
+    const teamScope = [actor.teamId, ...teams.filter(t => t.parentId === actor.teamId).map(t => t.id)];
+    return teamScope.includes(target.teamId);
+  }
+
+  // Regular members: cannot edit on behalf of others
+  return false;
 }
 
 // ─── auth / login ────────────────────────────────────────────────────────────
@@ -149,9 +169,8 @@ app.post('/api/leave', (req, res) => {
   const actor  = data.users.find(u => u.id === actorId);
   if (!target || !actor) return res.status(400).json({ error: 'User not found.' });
 
-  const allowed = allowedTeams(actor.teamId, data.teams);
-  if (!allowed.includes(target.teamId))
-    return res.status(403).json({ error: 'You can only manage leave for your own team.' });
+  if (!canEditForUser(actor, userId, data.users, data.teams))
+    return res.status(403).json({ error: 'You can only manage your own leave, or your team\'s leave if you are a team leader.' });
 
   if (startDate > endDate)
     return res.status(400).json({ error: 'Start date must be on or before end date.' });
@@ -173,8 +192,7 @@ app.put('/api/leave/:id', (req, res) => {
   const actor  = data.users.find(u => u.id === actorId);
   if (!target || !actor) return res.status(400).json({ error: 'User not found.' });
 
-  const allowed = allowedTeams(actor.teamId, data.teams);
-  if (!allowed.includes(target.teamId))
+  if (!canEditForUser(actor, leave.userId, data.users, data.teams))
     return res.status(403).json({ error: 'Access denied.' });
 
   if (startDate > endDate)
@@ -192,14 +210,10 @@ app.delete('/api/leave/:id', (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Leave record not found.' });
 
   const leave  = data.leaves[idx];
-  const target = data.users.find(u => u.id === leave.userId);
   const actor  = data.users.find(u => u.id === actorId);
 
-  if (target && actor) {
-    const allowed = allowedTeams(actor.teamId, data.teams);
-    if (!allowed.includes(target.teamId))
-      return res.status(403).json({ error: 'Access denied.' });
-  }
+  if (actor && !canEditForUser(actor, leave.userId, data.users, data.teams))
+    return res.status(403).json({ error: 'Access denied.' });
 
   data.leaves.splice(idx, 1);
   writeData(data);
@@ -218,9 +232,8 @@ app.post('/api/wfh', (req, res) => {
   const actor  = data.users.find(u => u.id === actorId);
   if (!target || !actor) return res.status(400).json({ error: 'User not found.' });
 
-  const allowed = allowedTeams(actor.teamId, data.teams);
-  if (!allowed.includes(target.teamId))
-    return res.status(403).json({ error: 'You can only manage WFH for your own team.' });
+  if (!canEditForUser(actor, userId, data.users, data.teams))
+    return res.status(403).json({ error: 'You can only manage your own leave, or your team\'s leave if you are a team leader.' });
 
   // Enforce 2-per-month cap
   const month      = date.substring(0, 7);
@@ -243,15 +256,11 @@ app.delete('/api/wfh/:id', (req, res) => {
   const idx     = data.wfh.findIndex(w => w.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'WFH record not found.' });
 
-  const wfh    = data.wfh[idx];
-  const target = data.users.find(u => u.id === wfh.userId);
-  const actor  = data.users.find(u => u.id === actorId);
+  const wfh   = data.wfh[idx];
+  const actor = data.users.find(u => u.id === actorId);
 
-  if (target && actor) {
-    const allowed = allowedTeams(actor.teamId, data.teams);
-    if (!allowed.includes(target.teamId))
-      return res.status(403).json({ error: 'Access denied.' });
-  }
+  if (actor && !canEditForUser(actor, wfh.userId, data.users, data.teams))
+    return res.status(403).json({ error: 'Access denied.' });
 
   data.wfh.splice(idx, 1);
   writeData(data);
